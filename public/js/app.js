@@ -418,6 +418,11 @@ window.renderEntryForm = function () {
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">비밀번호 (확인용)</label>
                     <input type="password" id="password" placeholder="비밀번호 입력" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-color);">
                 </div>
+
+                <div class="alert mt-2" style="background-color: rgba(255, 0, 0, 0.1); color: #e03131; padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; text-align: left;">
+                    <strong>⚠️ 1회성 정보:</strong> 실제 사용하는 비밀번호를 입력하지 마세요!
+                </div>
+
                 <button onclick="handleEntrySubmit()" class="btn mt-4">응모 완료하고 결과 보기</button>
                 <button onclick="renderResultChoicePage()" class="btn btn-secondary mt-2">뒤로가기</button>
             </div>
