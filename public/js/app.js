@@ -118,7 +118,7 @@ window.renderMainPage = function () {
  */
 window.startTestFlow = async function (testId) {
     currentTestId = testId;
-    localStorage.setItem('currentTestId', testId);
+    localStorage.setItem('currentTestId', testId); // 안전을 위해 브라우저에 저장
 
     // 해당 테스트의 질문과 결과 데이터를 각각의 JSON 파일에서 로드
     try {
@@ -148,10 +148,10 @@ function renderTestIntroPage() {
     const html = `
         <div class="intro-wrapper text-center">
             <div class="intro-thumbnail-container" style="max-width: 300px; margin: 0 auto 1.5rem auto; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow);">
-                <img src="${test.thumbnail}" alt="${test.title}" style="width: 100%; height: auto; display: block;">
+                <img src="${test ? test.thumbnail : ''}" alt="${test ? test.title : ''}" style="width: 100%; height: auto; display: block;">
             </div>
-            <h2 class="mt-2" style="font-size: 1.5rem; font-weight: bold;">${test.title}</h2>
-            <p class="mt-2" style="color: #666; word-break: keep-all;">${test.description || '재미있는 심리테스트를 시작해보세요!'}</p>
+            <h2 class="mt-2" style="font-size: 1.5rem; font-weight: bold;">${test ? test.title : '심리테스트'}</h2>
+            <p class="mt-2" style="color: #666; word-break: keep-all;">${(test && test.description) || '재미있는 심리테스트를 시작해보세요!'}</p>
             <div class="mt-4">
                 <button onclick="startTest()" class="btn">테스트 시작하기</button>
                 <button onclick="renderMainPage()" class="btn btn-secondary mt-2">목록으로</button>
@@ -315,6 +315,11 @@ window.startAdAndEntry = function () {
  */
 function renderResultPage() {
     const result = JSON.parse(localStorage.getItem('testResult'));
+    if (!result) {
+        alert('결과 데이터를 찾을 수 없습니다.');
+        renderMainPage();
+        return;
+    }
 
     const html = `
         <div class="result-wrapper text-center">
@@ -463,6 +468,17 @@ window.handleEntrySubmit = async function () {
     if (!username) { alert('닉네임을 입력해주세요!'); return; }
     if (!password) { alert('비밀번호를 입력해주세요!'); return; }
 
+    // 테스트 ID 복구 (안전장치)
+    if (!currentTestId) {
+        currentTestId = localStorage.getItem('currentTestId');
+    }
+
+    if (!currentTestId) {
+        alert('테스트 정보가 손실되었습니다. 메인화면으로 이동합니다.');
+        renderMainPage();
+        return;
+    }
+
     // 1. 결과 저장 (Firestore)
     if (window.db) {
         const { doc, setDoc, updateDoc, increment, collection, addDoc, serverTimestamp } = window.fbUtils;
@@ -471,7 +487,7 @@ window.handleEntrySubmit = async function () {
             // 응모 내역 저장
             await addDoc(collection(window.db, "entries"), {
                 username,
-                password, // 주의: 실제 운영 시에는 암호화하거나 다른 인증 체계 사용 권장
+                password,
                 testId: currentTestId,
                 result: JSON.parse(localStorage.getItem('testResult')),
                 timestamp: serverTimestamp()
@@ -484,9 +500,7 @@ window.handleEntrySubmit = async function () {
             };
             updateObj[`participantsPerTest.${currentTestId}`] = increment(1);
 
-            // 문서가 없을 수도 있으므로 set(merge) 사용 고려 가능하나 여기서는 update 시도
             await updateDoc(statsRef, updateObj).catch(async (e) => {
-                // 문서가 없으면 생성
                 if (e.code === 'not-found') {
                     const initialData = { totalParticipants: 1 };
                     initialData.participantsPerTest = {};
@@ -494,7 +508,6 @@ window.handleEntrySubmit = async function () {
                     await setDoc(statsRef, initialData);
                 }
             });
-
             console.log('Firebase 데이터 저장 완료');
         } catch (e) {
             console.error('Firebase 저장 실패', e);
@@ -502,20 +515,29 @@ window.handleEntrySubmit = async function () {
     }
 
     localStorage.setItem('currentUser', username);
+
     // 참여자 수 업데이트 (로컬 반영)
-    const testIdx = TESTS_DATA.findIndex(t => t.id === currentTestId);
-    if (testIdx !== -1) TESTS_DATA[testIdx].participants++;
+    if (TESTS_DATA && TESTS_DATA.length) {
+        const testIdx = TESTS_DATA.findIndex(t => t.id === currentTestId);
+        if (testIdx !== -1) TESTS_DATA[testIdx].participants++;
+    }
 
     renderEntryComplete();
 };
 
 function renderEntryComplete() {
+    // currentTestId가 없을 경우 복구 시도
+    if (!currentTestId) {
+        currentTestId = localStorage.getItem('currentTestId');
+    }
+
     const test = TESTS_DATA.find(t => t.id === currentTestId);
+
     const html = `
         <div class="raffle-result text-center">
             <h2 class="mt-4" style="font-size: 2rem; color: var(--primary-color);">🎉 응모 완료! 🎉</h2>
             <div class="info-box mt-4" style="background: var(--card-bg); padding: 1.5rem; border: 1px solid var(--border-color); display: inline-block; border-radius: 12px; box-shadow: var(--shadow); max-width: 90%;">
-                 <div>응모자 ID: <strong>${localStorage.getItem('currentUser')}</strong></div>
+                 <div>응모자 ID: <strong>${localStorage.getItem('currentUser') || '익명'}</strong></div>
                  <div style="border-top: 1px solid var(--border-color); margin-top: 0.5rem; padding-top: 0.5rem;">이 테스트 참여자: <strong>${(test ? test.participants : 0).toLocaleString()}</strong>명</div>
             </div>
             <div class="mt-4">
