@@ -260,7 +260,7 @@ window.renderEntryForm = function () {
     const html = `
         <div class="login-wrapper text-center">
             <h2 class="mt-4" style="font-size: 1.5rem; font-weight: bold;">경품 응모</h2>
-            <p class="mt-2" style="opacity: 0.7;">당첨 시 연락받을 정보를 입력해주세요.</p>
+            <p class="mt-2" style="opacity: 0.7;">당첨자 발표 시 본인 확인을 위한 정보를 입력해 주세요.</p>
             
             <div class="card mt-4" style="background: var(--card-bg); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow);">
                 <div class="input-group" style="text-align: left;">
