@@ -12,27 +12,39 @@
 
 <body>
     <div id="app">
-        <!-- 헤더 영역 -->
-        <header class="main-header">
-            <div class="header-left">
-                <div class="logo" onclick="renderMainPage()" style="cursor: pointer;">🏠 심리테스트</div>
-            </div>
-            <div class="header-right">
-                <button id="theme-toggle" class="theme-btn" onclick="toggleTheme()">🌙 다크 모드</button>
+        <header id="header">
+            <div class="header-container">
+                <h1 id="logo" style="cursor: pointer;" onclick="renderMainPage()">🏠 심리테스트</h1>
+                <button id="theme-toggle" onclick="toggleTheme()"
+                    style="background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: all 0.3s; line-height: 1;">🌙
+                    다크 모드</button>
             </div>
         </header>
-
-        <!-- 메인 컨텐츠 영역 -->
-        <main id="main-content" class="container">
-            <!-- 페이지들이 자바스크립트에 의해 이곳에 렌더링 됩니다 -->
-            <div class="loading">로딩중...</div>
+        <main id="main-content" class="container mt-4">
+            <!-- JavaScript가 이곳에 HTML을 주입합니다. -->
         </main>
 
-        <!-- 푸터 영역 -->
         <footer class="main-footer">
             <p>&copy; 2026 심리테스트 연구소. All rights reserved.</p>
         </footer>
     </div>
+
+    <!-- Firebase SDK (ESM 방식) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import firebaseConfig from "./js/firebase-config.js";
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        // 전역 객체로 노출 (app.js에서 사용 가능하게 함)
+        window.db = db;
+        window.fbUtils = { doc, getDoc, setDoc, updateDoc, increment, collection, addDoc, serverTimestamp };
+    </script>
 
     <script src="./js/app.js"></script>
 </body>

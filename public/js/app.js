@@ -20,10 +20,27 @@ async function initApp() {
     try {
         const response = await fetch('./data/tests.json');
         TESTS_DATA = await response.json();
+
+        // 2. Firebase(Firestore)에서 참여자 수 동기화
+        if (window.db) {
+            const { doc, getDoc } = window.fbUtils;
+            const statsRef = doc(window.db, "stats", "global");
+            const statsSnap = await getDoc(statsRef);
+
+            if (statsSnap.exists()) {
+                const data = statsSnap.data();
+                // Firestore 데이터를 기반으로 TESTS_DATA의 참여자 수 업데이트
+                TESTS_DATA.forEach(test => {
+                    if (data.participantsPerTest && data.participantsPerTest[test.id]) {
+                        test.participants = data.participantsPerTest[test.id];
+                    }
+                });
+            }
+        }
     } catch (e) {
-        console.error('Failed to load tests data', e);
-        // 기본 폴백 데이터
-        TESTS_DATA = [
+        console.error('Failed to load tests/stats data', e);
+        // 기본 폴백 데이터 (JSON 로드 실패 시)
+        TESTS_DATA = TESTS_DATA.length ? TESTS_DATA : [
             { id: 'work-animal', title: '직장인 생존 유형 테스트', category: '성격', thumbnail: '🦁', participants: 12503, isNew: true }
         ];
     }
@@ -431,22 +448,66 @@ window.renderEntryForm = function () {
     render(html);
 };
 
-window.handleEntrySubmit = function () {
+window.handleEntrySubmit = async function () {
     const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
     if (!username) { alert('닉네임을 입력해주세요!'); return; }
+    if (!password) { alert('비밀번호를 입력해주세요!'); return; }
+
+    // 1. 결과 저장 (Firestore)
+    if (window.db) {
+        const { doc, setDoc, updateDoc, increment, collection, addDoc, serverTimestamp } = window.fbUtils;
+
+        try {
+            // 응모 내역 저장
+            await addDoc(collection(window.db, "entries"), {
+                username,
+                password, // 주의: 실제 운영 시에는 암호화하거나 다른 인증 체계 사용 권장
+                testId: currentTestId,
+                result: JSON.parse(localStorage.getItem('testResult')),
+                timestamp: serverTimestamp()
+            });
+
+            // 전역 참여자 수 업데이트
+            const statsRef = doc(window.db, "stats", "global");
+            const updateObj = {
+                totalParticipants: increment(1)
+            };
+            updateObj[`participantsPerTest.${currentTestId}`] = increment(1);
+
+            // 문서가 없을 수도 있으므로 set(merge) 사용 고려 가능하나 여기서는 update 시도
+            await updateDoc(statsRef, updateObj).catch(async (e) => {
+                // 문서가 없으면 생성
+                if (e.code === 'not-found') {
+                    const initialData = { totalParticipants: 1 };
+                    initialData.participantsPerTest = {};
+                    initialData.participantsPerTest[currentTestId] = 1;
+                    await setDoc(statsRef, initialData);
+                }
+            });
+
+            console.log('Firebase 데이터 저장 완료');
+        } catch (e) {
+            console.error('Firebase 저장 실패', e);
+        }
+    }
+
     localStorage.setItem('currentUser', username);
-    let participants = parseInt(localStorage.getItem('participants')) || 12347;
-    localStorage.setItem('participants', participants + 1);
+    // 참여자 수 업데이트 (로컬 반영)
+    const testIdx = TESTS_DATA.findIndex(t => t.id === currentTestId);
+    if (testIdx !== -1) TESTS_DATA[testIdx].participants++;
+
     renderEntryComplete();
 };
 
 function renderEntryComplete() {
+    const test = TESTS_DATA.find(t => t.id === currentTestId);
     const html = `
         <div class="raffle-result text-center">
             <h2 class="mt-4" style="font-size: 2rem; color: var(--primary-color);">🎉 응모 완료! 🎉</h2>
             <div class="info-box mt-4" style="background: var(--card-bg); padding: 1.5rem; border: 1px solid var(--border-color); display: inline-block; border-radius: 12px; box-shadow: var(--shadow); max-width: 90%;">
                  <div>응모자 ID: <strong>${localStorage.getItem('currentUser')}</strong></div>
-                 <div style="border-top: 1px solid var(--border-color); margin-top: 0.5rem; padding-top: 0.5rem;">총 응모자 수: <strong>${(parseInt(localStorage.getItem('participants')) || 0).toLocaleString()}</strong>명</div>
+                 <div style="border-top: 1px solid var(--border-color); margin-top: 0.5rem; padding-top: 0.5rem;">이 테스트 참여자: <strong>${(test ? test.participants : 0).toLocaleString()}</strong>명</div>
             </div>
             <div class="mt-4">
                 <button onclick="renderResultPage()" class="btn">최종 결과 확인하기</button>
