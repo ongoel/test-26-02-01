@@ -224,21 +224,45 @@ function calculateAndShowResult() {
 }
 
 /**
- * [페이지] 결과 화면
+ * [페이지] 결과 화면 (업데이트: 궁합, 공유, 도감)
  */
 function renderResultPage() {
     const result = JSON.parse(localStorage.getItem('testResult'));
+    const testId = currentTestId; // 현재 테스트 ID 저장
 
     const html = `
         <div class="result-wrapper text-center">
             <h2 class="mt-4" style="font-size: 1.8rem; font-weight: bold; color: var(--primary-color);">테스트 결과</h2>
-            <div class="result-card mt-4" style="padding: 2rem; background: var(--bg-color); border-radius: 12px; border: 1px solid var(--border-color);">
-                <h3 style="font-size: 1.4rem; color: var(--text-color);">${result.title}</h3>
-                <p class="mt-2" style="color: var(--text-color); opacity: 0.8; word-break: keep-all;">${result.desc}</p>
+            
+            <div id="capture-area" class="result-card mt-4" style="padding: 2rem; background: var(--bg-color); border-radius: 12px; border: 1px solid var(--border-color);">
+                <h3 style="font-size: 1.4rem; color: var(--text-color); margin-bottom: 1rem;">${result.title}</h3>
+                <p class="mt-2" style="color: var(--text-color); opacity: 0.8; word-break: keep-all; margin-bottom: 2rem;">${result.desc}</p>
+                
+                <div class="compatibility-box" style="display: flex; gap: 10px; justify-content: center; margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+                    <div style="flex: 1; padding: 10px; background: rgba(46, 204, 113, 0.1); border-radius: 8px;">
+                        <span style="display: block; font-size: 0.8rem; color: #2ecc71; font-weight: bold;">환상의 궁합 💖</span>
+                        <span style="font-size: 0.9rem;">${result.bestMatch || '-'}</span>
+                    </div>
+                    <div style="flex: 1; padding: 10px; background: rgba(231, 76, 60, 0.1); border-radius: 8px;">
+                        <span style="display: block; font-size: 0.8rem; color: #e74c3c; font-weight: bold;">환장의 궁합 💔</span>
+                        <span style="font-size: 0.9rem;">${result.worstMatch || '-'}</span>
+                    </div>
+                </div>
             </div>
+
+            <div class="action-buttons mt-4" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="shareLink()" class="btn btn-secondary" style="flex: 1; min-width: 140px;">🔗 링크 공유</button>
+                <button onclick="saveImage()" class="btn btn-secondary" style="flex: 1; min-width: 140px;">📸 이미지 저장</button>
+            </div>
+            
+            <div class="mt-3">
+                 <button onclick="renderAllResultsPage()" class="btn btn-secondary" style="width: 100%; border: 1px solid var(--primary-color); color: var(--primary-color); background: transparent;">📚 전체 결과 도감 보기</button>
+            </div>
+
             <div class="mt-4">
                 <button onclick="renderMainPage()" class="btn btn-secondary">다른 테스트 하러가기</button>
             </div>
+
             <div class="ad-section mt-4" style="padding: 1.5rem; border: 2px dashed #ff6b6b; border-radius: 12px; background: rgba(255, 107, 107, 0.1);">
                 <h4 style="font-weight: bold; color: #fa5252;">🎁 경품 추첨 기회</h4>
                 <p style="font-size: 0.9rem; margin-bottom: 1rem; opacity: 0.8;">결과를 저장하고 경품 추첨에 응모하세요!</p>
@@ -248,6 +272,81 @@ function renderResultPage() {
     `;
     render(html);
 }
+
+/**
+ * [기능] 전체 결과 도감 보기
+ */
+window.renderAllResultsPage = function () {
+    if (!currentResultData || !currentResultData.types) {
+        alert('결과 데이터를 불러올 수 없습니다.');
+        return;
+    }
+
+    let html = `
+        <div class="collection-wrapper text-center">
+            <h2 class="mt-4" style="font-size: 1.5rem; font-weight: bold;">전체 결과 도감</h2>
+            <p class="mt-2" style="opacity: 0.7;">모든 유형을 한눈에 확인해보세요!</p>
+            <div class="mt-4" style="display: flex; flex-direction: column; gap: 1rem;">
+    `;
+
+    Object.values(currentResultData.types).forEach(type => {
+        html += `
+            <div class="result-card" style="padding: 1.5rem; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); text-align: left;">
+                <h4 style="font-weight: bold; color: var(--primary-color); margin-bottom: 0.5rem;">${type.title}</h4>
+                <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">${type.desc}</p>
+                <div style="font-size: 0.8rem; color: #888;">
+                    💖 ${type.bestMatch || '-'} / 💔 ${type.worstMatch || '-'}
+                </div>
+            </div>
+        `;
+    });
+
+    html += `
+            </div>
+            <div class="mt-4">
+                <button onclick="renderResultPage()" class="btn">내 결과로 돌아가기</button>
+            </div>
+        </div>
+    `;
+    render(html);
+};
+
+/**
+ * [기능] 공유하기 (링크)
+ */
+window.shareLink = function () {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        alert('링크가 복사되었습니다! 친구들에게 공유해보세요.');
+    }).catch(err => {
+        console.error('복사 실패', err);
+        alert('링크 복사에 실패했습니다.');
+    });
+};
+
+/**
+ * [기능] 이미지 저장 (html2canvas)
+ */
+window.saveImage = function () {
+    const element = document.getElementById('capture-area');
+    if (!element) return;
+
+    // 캡처 중임을 알리기
+    const originalBtnText = event.target.innerText;
+    event.target.innerText = '저장 중...';
+
+    html2canvas(element, { useCORS: true, scale: 2 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `test-result-${Date.now()}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+        event.target.innerText = originalBtnText;
+    }).catch(err => {
+        console.error('캡처 실패', err);
+        alert('이미지 저장에 실패했습니다.');
+        event.target.innerText = originalBtnText;
+    });
+};
 
 /**
  * [페이지] 응모 폼 (구 로그인)
