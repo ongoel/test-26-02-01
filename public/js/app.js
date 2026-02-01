@@ -38,7 +38,7 @@ function initTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
-        document.getElementById('theme-toggle').innerText = '라이트 모드';
+        document.getElementById('theme-toggle').innerText = '☀️ 라이트 모드';
     }
 }
 
@@ -46,7 +46,7 @@ window.toggleTheme = function () {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    document.getElementById('theme-toggle').innerText = isDark ? '라이트 모드' : '다크 모드';
+    document.getElementById('theme-toggle').innerText = isDark ? '☀️ 라이트 모드' : '🌙 다크 모드';
 };
 
 /**
