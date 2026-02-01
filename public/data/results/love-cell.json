@@ -3,98 +3,98 @@
         "ISTJ": {
             "title": "철벽 수비, 시크한 선비",
             "desc": "연애도 계획적으로! 신뢰가 쌓이기 전까진 마음을 열지 않지만, 내 사람이 되면 끝까지 책임집니다.",
-            "bestMatch": "다정다감 햇살캐 (ESFP)",
-            "worstMatch": "자유분방 보헤미안 (ENFP)"
+            "bestMatch": "다정다감 햇살캐",
+            "worstMatch": "자유분방 보헤미안"
         },
         "ISFJ": {
             "title": "현모양처/다정남, 배려왕",
             "desc": "상대방의 기분을 세심하게 살피는 헌신적인 사랑꾼. 기념일과 사소한 취향까지 절대 잊지 않아요.",
-            "bestMatch": "든든한 리드 리더 (ESTJ)",
-            "worstMatch": "토론 즐기는 파이터 (ENTP)"
+            "bestMatch": "든든한 리드 리더",
+            "worstMatch": "토론 즐기는 파이터"
         },
         "INFJ": {
             "title": "운명을 믿는 로맨티스트",
             "desc": "가벼운 만남은 NO! 영혼이 통하는 깊은 관계를 원합니다. 겉은 차가워 보여도 속은 용광로 같아요.",
-            "bestMatch": "직진하는 야망가 (ENTJ)",
-            "worstMatch": "현실주의 욜로족 (ESTP)"
+            "bestMatch": "직진하는 야망가",
+            "worstMatch": "현실주의 욜로족"
         },
         "INTJ": {
             "title": "연애도 공부하는 분석가",
             "desc": "상대방을 완벽하게 파악하고 공략하는 전략적인 사랑을 합니다. 배울 점이 있는 사람에게 끌려요.",
-            "bestMatch": "사랑둥이 댕댕이 (ENFP)",
-            "worstMatch": "감성 충만 사랑꾼 (ESFJ)"
+            "bestMatch": "사랑둥이 댕댕이",
+            "worstMatch": "감성 충만 사랑꾼"
         },
         "ISTP": {
             "title": "귀찮은 건 질색, 쿨내 진동",
             "desc": "밀당도 감정싸움도 딱 질색! 각자의 사생활을 존중해주는 쿨하고 담백한 연애를 선호합니다.",
-            "bestMatch": "열정적인 웅변가 (ENFJ)",
-            "worstMatch": "규칙 준수 유교맨 (ISTJ)"
+            "bestMatch": "열정적인 웅변가",
+            "worstMatch": "규칙 준수 유교맨"
         },
         "ISFP": {
             "title": "소심한 관종, 이불 밖은 위험해",
             "desc": "혼자 있는 시간도 중요하지만 데이트는 좋아! 소소하고 편안한 데이트를 즐기는 집돌이/집순이.",
-            "bestMatch": "적극적인 행동파 (ESTP)",
-            "worstMatch": "강압적인 보스 (ENTJ)"
+            "bestMatch": "적극적인 행동파",
+            "worstMatch": "강압적인 보스"
         },
         "INFP": {
             "title": "영화 같은 사랑을 꿈꾸는, 몽상가",
             "desc": "현실적인 조건보다는 마음이 중요해요. 상대방의 사소한 행동에도 큰 의미를 부여하고 감동받습니다.",
-            "bestMatch": "든든한 현실주의자 (ESTJ)",
-            "worstMatch": "차가운 논리왕 (ESTJ)"
+            "bestMatch": "든든한 현실주의자",
+            "worstMatch": "차가운 논리왕"
         },
         "INTP": {
             "title": "나만의 세계가 확고한, 너드남/녀",
             "desc": "독특한 취향을 공유할 수 있는 사람에게 꽂힙니다. 감정 표현은 서툴지만 논리적인 대화는 밤샘 가능!",
-            "bestMatch": "따뜻한 오지라퍼 (ESFJ)",
-            "worstMatch": "세심한 배려왕 (ISFJ)"
+            "bestMatch": "따뜻한 오지라퍼",
+            "worstMatch": "세심한 배려왕"
         },
         "ESTP": {
             "title": "스릴 즐기는 모험가",
-            "desc": "지루한 건 못 참아! 늘 새롭고 짜릿한 데이트를 찾아다닙니다. 밀당 없이 직진하는 화끈한 스타일.",
-            "bestMatch": "다정하지만 소심한 (ISFJ)",
-            "worstMatch": "진지한 철학자 (INFJ)"
+            "desc": "지루할 틈 못 참아! 늘 새롭고 짜릿한 데이트를 찾아다닙니다. 밀당 없이 직진하는 화끈한 스타일.",
+            "bestMatch": "다정하지만 소심한",
+            "worstMatch": "진지한 철학자"
         },
         "ESFP": {
             "title": "분위기 메이커, 파티 피플",
             "desc": "서프라이즈 이벤트 장인! 연인을 즐겁게 해주기 위해서라면 뭐든지 할 수 있는 열정적인 사랑꾼.",
-            "bestMatch": "계획적인 선비 (ISTJ)",
-            "worstMatch": "복잡한 생각쟁이 (INTJ)"
+            "bestMatch": "계획적인 선비",
+            "worstMatch": "복잡한 생각쟁이"
         },
         "ENFP": {
             "title": "금사빠 금사식? 아니, 금사빠 금사죽!",
             "desc": "한 번 빠지면 불처럼 타오르는 정열적인 사랑을 합니다. 애교 많고 표현도 확실한 댕댕이 스타일.",
-            "bestMatch": "차분한 전략가 (INTJ)",
-            "worstMatch": "엄격한 꼰대 (ISTJ)"
+            "bestMatch": "차분한 전략가",
+            "worstMatch": "엄격한 꼰대"
         },
         "ENTP": {
             "title": "장난기 가득한 악동",
             "desc": "티격태격 싸우는 것도 연애의 일부! 지적인 자극을 주는 상대와 격렬한 사랑을 나누고 싶어 해요.",
-            "bestMatch": "포용적인 성인군자 (INFJ)",
-            "worstMatch": "현실 안주형 (ISFJ)"
+            "bestMatch": "포용적인 성인군자",
+            "worstMatch": "현실 안주형"
         },
         "ESTJ": {
             "title": "책임감 강한, K-장녀/장남 스타일",
             "desc": "약속 시간 엄수는 기본! 미래가 보장된 안정적인 연애를 지향하며 리드하는 것을 좋아합니다.",
-            "bestMatch": "섬세한 내조왕 (ISFJ)",
-            "worstMatch": "즉흥적인 예술가 (ISFP)"
+            "bestMatch": "섬세한 내조왕",
+            "worstMatch": "즉흥적인 예술가"
         },
         "ESFJ": {
             "title": "사랑 퍼주는 인심 좋은",
             "desc": "주변 사람들에게 연인을 자랑하고 싶어 안달 난 팔불출! 헌신적이고 다정한 최고의 신랑/신붓감.",
-            "bestMatch": "논리적인 너드 (INTP)",
-            "worstMatch": "독립적인 고양이 (ISTP)"
+            "bestMatch": "논리적인 너드",
+            "worstMatch": "독립적인 고양이"
         },
         "ENFJ": {
             "title": "다정다감한 리트리버",
             "desc": "상대방의 성장을 돕는 성숙한 연애를 지향합니다. 말하지 않아도 마음을 알아주는 눈치 백단!",
-            "bestMatch": "시크한 행동파 (ISTP)",
-            "worstMatch": "무심한 개인주의자 (ISTP)"
+            "bestMatch": "시크한 행동파",
+            "worstMatch": "무심한 개인주의자"
         },
         "ENTJ": {
             "title": "성취 지향적인 야망가",
             "desc": "일도 사랑도 완벽하게! 함께 성장할 수 있는 능력 있는 파트너를 원하며 주도적으로 관계를 이끕니다.",
-            "bestMatch": "깊은 내면의 소유자 (INFP)",
-            "worstMatch": "감정 기복 심한 (ISFP)"
+            "bestMatch": "깊은 내면의 소유자",
+            "worstMatch": "감정 기복 심한"
         }
     },
     "default": {

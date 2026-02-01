@@ -220,15 +220,75 @@ function calculateAndShowResult() {
     }
 
     localStorage.setItem('testResult', JSON.stringify(finalResult));
-    renderResultPage();
+    renderResultChoicePage();
 }
+
+/**
+ * [페이지] 결과 진입 선택 화면
+ */
+function renderResultChoicePage() {
+    const html = `
+        <div class="choice-wrapper text-center">
+            <h2 class="mt-4" style="font-size: 1.5rem; font-weight: bold;">테스트 완료!</h2>
+            <p class="mt-2" style="color: #666;">결과를 확인하는 방법을 선택해주세요.</p>
+            
+            <div class="mt-4" style="display: flex; flex-direction: column; gap: 1rem;">
+                <button onclick="renderResultPage()" class="btn btn-secondary" style="background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 1.5rem; border-radius: 12px;">
+                    <span style="display: block; font-size: 1.1rem; font-weight: bold; margin-bottom: 0.3rem;">🔓 결과 보러가기</span>
+                    <span style="font-size: 0.85rem; opacity: 0.7;">광고 없이 바로 결과를 확인합니다.</span>
+                </button>
+
+                <button onclick="startAdAndEntry()" class="btn" style="padding: 1.5rem; border-radius: 12px; background: var(--primary-color);">
+                    <span style="display: block; font-size: 1.1rem; font-weight: bold; margin-bottom: 0.3rem;">🎁 경품 응모하고 결과보기</span>
+                    <span style="font-size: 0.85rem; opacity: 0.9;">짧은 광고 후 경품 추천 기회를 드려요!</span>
+                </button>
+            </div>
+        </div>
+    `;
+    render(html);
+}
+
+/**
+ * [흐름] 광고 시뮬레이션 후 응모 폼으로 이동
+ */
+window.startAdAndEntry = function () {
+    let progress = 0;
+    let html = `
+        <div class="ad-simulation text-center">
+            <h2 class="mt-4" style="font-size: 1.5rem; font-weight: bold;">혜택을 확인하고 있습니다...</h2>
+            <p class="mt-2" style="color: #666;">잠시만 기다려주시면 응모 페이지로 연결됩니다.</p>
+            
+            <div class="mt-4" style="width: 100%; height: 20px; background: #eee; border-radius: 10px; overflow: hidden;">
+                <div id="ad-progress" style="width: 0%; height: 100%; background: var(--primary-color); transition: width 0.1s linear;"></div>
+            </div>
+            
+            <div class="mt-4" style="padding: 2rem; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); opacity: 0.5;">
+                <p>전면 광고가 노출되는 영역입니다.</p>
+                <div style="font-size: 3rem; margin-top: 1rem;">📺</div>
+            </div>
+        </div>
+    `;
+    render(html);
+
+    const interval = setInterval(() => {
+        progress += 5;
+        const bar = document.getElementById('ad-progress');
+        if (bar) bar.style.width = progress + '%';
+
+        if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                renderEntryForm();
+            }, 500);
+        }
+    }, 150);
+};
 
 /**
  * [페이지] 결과 화면 (업데이트: 궁합, 공유, 도감)
  */
 function renderResultPage() {
     const result = JSON.parse(localStorage.getItem('testResult'));
-    const testId = currentTestId; // 현재 테스트 ID 저장
 
     const html = `
         <div class="result-wrapper text-center">
@@ -260,13 +320,7 @@ function renderResultPage() {
             </div>
 
             <div class="mt-4">
-                <button onclick="renderMainPage()" class="btn btn-secondary">다른 테스트 하러가기</button>
-            </div>
-
-            <div class="ad-section mt-4" style="padding: 1.5rem; border: 2px dashed #ff6b6b; border-radius: 12px; background: rgba(255, 107, 107, 0.1);">
-                <h4 style="font-weight: bold; color: #fa5252;">🎁 경품 추첨 기회</h4>
-                <p style="font-size: 0.9rem; margin-bottom: 1rem; opacity: 0.8;">결과를 저장하고 경품 추첨에 응모하세요!</p>
-                <button onclick="renderEntryForm()" class="btn" style="background-color: #fa5252;">응모하고 혜택 받기</button>
+                <button onclick="renderMainPage()" class="btn btn-secondary">메인으로 돌아가기</button>
             </div>
         </div>
     `;
@@ -293,8 +347,8 @@ window.renderAllResultsPage = function () {
         html += `
             <div class="result-card" style="padding: 1.5rem; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); text-align: left;">
                 <h4 style="font-weight: bold; color: var(--primary-color); margin-bottom: 0.5rem;">${type.title}</h4>
-                <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">${type.desc}</p>
-                <div style="font-size: 0.8rem; color: #888;">
+                <p style="font-size: 0.9rem; margin-bottom: 0.3rem;">${type.desc}</p>
+                <div style="font-size: 0.8rem; opacity: 0.8;">
                     💖 ${type.bestMatch || '-'} / 💔 ${type.worstMatch || '-'}
                 </div>
             </div>
@@ -331,7 +385,6 @@ window.saveImage = function () {
     const element = document.getElementById('capture-area');
     if (!element) return;
 
-    // 캡처 중임을 알리기
     const originalBtnText = event.target.innerText;
     event.target.innerText = '저장 중...';
 
@@ -365,8 +418,8 @@ window.renderEntryForm = function () {
                     <label style="display: block; margin-bottom: 0.5rem; font-weight: bold;">비밀번호 (확인용)</label>
                     <input type="password" id="password" placeholder="비밀번호 입력" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-color);">
                 </div>
-                <button onclick="handleEntrySubmit()" class="btn mt-4">응모 완료하기</button>
-                <button onclick="renderResultPage()" class="btn btn-secondary mt-2">뒤로가기</button>
+                <button onclick="handleEntrySubmit()" class="btn mt-4">응모 완료하고 결과 보기</button>
+                <button onclick="renderResultChoicePage()" class="btn btn-secondary mt-2">뒤로가기</button>
             </div>
         </div>
     `;
@@ -391,7 +444,7 @@ function renderEntryComplete() {
                  <div style="border-top: 1px solid var(--border-color); margin-top: 0.5rem; padding-top: 0.5rem;">총 응모자 수: <strong>${(parseInt(localStorage.getItem('participants')) || 0).toLocaleString()}</strong>명</div>
             </div>
             <div class="mt-4">
-                <button onclick="renderMainPage()" class="btn">메인으로 돌아가기</button>
+                <button onclick="renderResultPage()" class="btn">최종 결과 확인하기</button>
             </div>
         </div>
     `;
