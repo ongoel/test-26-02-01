@@ -118,6 +118,7 @@ window.renderMainPage = function () {
  */
 window.startTestFlow = async function (testId) {
     currentTestId = testId;
+    localStorage.setItem('currentTestId', testId);
 
     // 해당 테스트의 질문과 결과 데이터를 각각의 JSON 파일에서 로드
     try {
