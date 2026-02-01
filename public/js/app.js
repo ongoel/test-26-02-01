@@ -88,22 +88,25 @@ window.renderMainPage = function () {
 
     TESTS_DATA.forEach(test => {
         html += `
-            <div class="test-card" onclick="startTestFlow('${test.id}')">
-                ${test.isNew ? '<span class="badge-new">NEW</span>' : '<span style="height:19px; display:block; margin-bottom:4px;"></span>'}
-                <div class="test-thumbnail">${test.thumbnail}</div>
+        html += `
+            < div class="test-card" onclick = "startTestFlow('${test.id}')" >
+                ${ test.isNew ? '<span class="badge-new">NEW</span>' : '<span style="height:19px; display:block; margin-bottom:4px;"></span>' }
+                <div class="test-thumbnail">
+                    <img src="${test.thumbnail}" alt="${test.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                </div>
                 <div class="test-title">${test.title}</div>
                 <div class="test-participants">👀 ${test.participants.toLocaleString()}명 참여</div>
-            </div>
-        `;
+            </div >
+            `;
     });
 
     html += `
-            </div>
+            </div >
             <div class="mt-4">
-                 <button onclick="renderCheckWinnerPage()" class="btn btn-secondary" style="background-color: transparent; border: 1px solid #ddd; color: #666;">지난주 당첨 확인하기</button>
+                <button onclick="renderCheckWinnerPage()" class="btn btn-secondary" style="background-color: transparent; border: 1px solid #ddd; color: #666;">지난주 당첨 확인하기</button>
             </div>
-        </div>
-    `;
+        </div >
+            `;
     render(html);
 };
 
@@ -116,8 +119,8 @@ window.startTestFlow = async function (testId) {
     // 해당 테스트의 질문과 결과 데이터를 각각의 JSON 파일에서 로드
     try {
         const [qRes, rRes] = await Promise.all([
-            fetch(`./data/questions/${testId}.json`),
-            fetch(`./data/results/${testId}.json`)
+            fetch(`./ data / questions / ${ testId }.json`),
+            fetch(`./ data / results / ${ testId }.json`)
         ]);
 
         if (!qRes.ok || !rRes.ok) throw new Error('Data not found');
@@ -139,16 +142,18 @@ function renderTestIntroPage() {
     const test = TESTS_DATA.find(t => t.id === currentTestId);
 
     const html = `
-        <div class="intro-wrapper text-center">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">${test.thumbnail}</div>
+            < div class="intro-wrapper text-center" >
+            <div class="intro-thumbnail-container" style="max-width: 300px; margin: 0 auto 1.5rem auto; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow);">
+                <img src="${test.thumbnail}" alt="${test.title}" style="width: 100%; height: auto; display: block;">
+            </div>
             <h2 class="mt-2" style="font-size: 1.5rem; font-weight: bold;">${test.title}</h2>
             <p class="mt-2" style="color: #666; word-break: keep-all;">${test.description || '재미있는 심리테스트를 시작해보세요!'}</p>
             <div class="mt-4">
                 <button onclick="startTest()" class="btn">테스트 시작하기</button>
                 <button onclick="renderMainPage()" class="btn btn-secondary mt-2">목록으로</button>
             </div>
-        </div>
-    `;
+        </div >
+            `;
     render(html);
 }
 
@@ -170,7 +175,7 @@ function renderQuestionPage(currentIndex) {
     const progress = ((currentIndex + 1) / currentQuestions.length) * 100;
 
     let html = `
-        <div class="question-wrapper">
+            < div class="question-wrapper" >
             <div class="progress-bar" style="width: 100%; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin-bottom: 2rem;">
                 <div style="width: ${progress}%; height: 100%; background: var(--primary-color); transition: width 0.3s;"></div>
             </div>
@@ -182,7 +187,7 @@ function renderQuestionPage(currentIndex) {
         html += `<button onclick="handleAnswer(${currentIndex}, ${idx})" class="btn btn-secondary" style="background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); text-align: left; transition: all 0.2s;">${option.text}</button>`;
     });
 
-    html += `</div></div>`;
+    html += `</div></div > `;
     render(html);
 }
 
@@ -245,7 +250,7 @@ function calculateAndShowResult() {
  */
 function renderResultChoicePage() {
     const html = `
-        <div class="choice-wrapper text-center">
+            < div class="choice-wrapper text-center" >
             <h2 class="mt-4" style="font-size: 1.5rem; font-weight: bold;">테스트 완료!</h2>
             <p class="mt-2" style="color: #666;">결과를 확인하는 방법을 선택해주세요.</p>
             
@@ -260,8 +265,8 @@ function renderResultChoicePage() {
                     <span style="font-size: 0.85rem; opacity: 0.9;">짧은 광고 후 경품 추천 기회를 드려요!</span>
                 </button>
             </div>
-        </div>
-    `;
+        </div >
+            `;
     render(html);
 }
 
@@ -271,7 +276,7 @@ function renderResultChoicePage() {
 window.startAdAndEntry = function () {
     let progress = 0;
     let html = `
-        <div class="ad-simulation text-center">
+            < div class="ad-simulation text-center" >
             <h2 class="mt-4" style="font-size: 1.5rem; font-weight: bold;">혜택을 확인하고 있습니다...</h2>
             <p class="mt-2" style="color: #666;">잠시만 기다려주시면 응모 페이지로 연결됩니다.</p>
             
@@ -283,8 +288,8 @@ window.startAdAndEntry = function () {
                 <p>전면 광고가 노출되는 영역입니다.</p>
                 <div style="font-size: 3rem; margin-top: 1rem;">📺</div>
             </div>
-        </div>
-    `;
+        </div >
+            `;
     render(html);
 
     const interval = setInterval(() => {
@@ -308,7 +313,7 @@ function renderResultPage() {
     const result = JSON.parse(localStorage.getItem('testResult'));
 
     const html = `
-        <div class="result-wrapper text-center">
+            < div class="result-wrapper text-center" >
             <h2 class="mt-4" style="font-size: 1.8rem; font-weight: bold; color: var(--primary-color);">테스트 결과</h2>
             
             <div id="capture-area" class="result-card mt-4" style="padding: 2rem; background: var(--bg-color); border-radius: 12px; border: 1px solid var(--border-color);">
@@ -339,8 +344,8 @@ function renderResultPage() {
             <div class="mt-4">
                 <button onclick="renderMainPage()" class="btn btn-secondary">메인으로 돌아가기</button>
             </div>
-        </div>
-    `;
+        </div >
+            `;
     render(html);
 }
 
@@ -354,7 +359,7 @@ window.renderAllResultsPage = function () {
     }
 
     let html = `
-        <div class="collection-wrapper text-center">
+            < div class="collection-wrapper text-center" >
             <h2 class="mt-4" style="font-size: 1.5rem; font-weight: bold;">전체 결과 도감</h2>
             <p class="mt-2" style="opacity: 0.7;">모든 유형을 한눈에 확인해보세요!</p>
             <div class="mt-4" style="display: flex; flex-direction: column; gap: 1rem;">
@@ -377,8 +382,8 @@ window.renderAllResultsPage = function () {
             <div class="mt-4">
                 <button onclick="renderResultPage()" class="btn">내 결과로 돌아가기</button>
             </div>
-        </div>
-    `;
+        </div >
+            `;
     render(html);
 };
 
@@ -407,7 +412,7 @@ window.saveImage = function () {
 
     html2canvas(element, { useCORS: true, scale: 2 }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `test-result-${Date.now()}.png`;
+        link.download = `test - result - ${ Date.now() }.png`;
         link.href = canvas.toDataURL();
         link.click();
         event.target.innerText = originalBtnText;
@@ -423,7 +428,7 @@ window.saveImage = function () {
  */
 window.renderEntryForm = function () {
     const html = `
-        <div class="login-wrapper text-center">
+            < div class="login-wrapper text-center" >
             <h2 class="mt-4" style="font-size: 1.5rem; font-weight: bold;">경품 응모</h2>
             <p class="mt-2" style="opacity: 0.7;">당첨자 발표 시 본인 확인을 위한 정보를 입력해 주세요.</p>
             <div class="card mt-4" style="background: var(--card-bg); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow);">
@@ -443,8 +448,8 @@ window.renderEntryForm = function () {
                 <button onclick="handleEntrySubmit()" class="btn mt-4">응모 완료하고 결과 보기</button>
                 <button onclick="renderResultChoicePage()" class="btn btn-secondary mt-2">뒤로가기</button>
             </div>
-        </div>
-    `;
+        </div >
+            `;
     render(html);
 };
 
@@ -473,7 +478,7 @@ window.handleEntrySubmit = async function () {
             const updateObj = {
                 totalParticipants: increment(1)
             };
-            updateObj[`participantsPerTest.${currentTestId}`] = increment(1);
+            updateObj[`participantsPerTest.${ currentTestId } `] = increment(1);
 
             // 문서가 없을 수도 있으므로 set(merge) 사용 고려 가능하나 여기서는 update 시도
             await updateDoc(statsRef, updateObj).catch(async (e) => {
@@ -503,7 +508,7 @@ window.handleEntrySubmit = async function () {
 function renderEntryComplete() {
     const test = TESTS_DATA.find(t => t.id === currentTestId);
     const html = `
-        <div class="raffle-result text-center">
+            < div class="raffle-result text-center" >
             <h2 class="mt-4" style="font-size: 2rem; color: var(--primary-color);">🎉 응모 완료! 🎉</h2>
             <div class="info-box mt-4" style="background: var(--card-bg); padding: 1.5rem; border: 1px solid var(--border-color); display: inline-block; border-radius: 12px; box-shadow: var(--shadow); max-width: 90%;">
                  <div>응모자 ID: <strong>${localStorage.getItem('currentUser')}</strong></div>
@@ -512,15 +517,15 @@ function renderEntryComplete() {
             <div class="mt-4">
                 <button onclick="renderResultPage()" class="btn">최종 결과 확인하기</button>
             </div>
-        </div>
-    `;
+        </div >
+            `;
     render(html);
 }
 
 // 당첨 확인 (1,1 당첨 / 2,2 꽝 / 나머지 오류)
 window.renderCheckWinnerPage = function () {
     const html = `
-        <div class="login-wrapper text-center">
+            < div class="login-wrapper text-center" >
             <h2 class="mt-4" style="font-size: 1.5rem; font-weight: bold;">당첨 확인</h2>
             <div class="card mt-4" style="background: var(--card-bg); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow);">
                 <input type="text" id="check-username" placeholder="닉네임" style="width: 100%; padding: 0.8rem; margin-bottom: 0.5rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color);">
@@ -529,7 +534,7 @@ window.renderCheckWinnerPage = function () {
                 <button onclick="renderMainPage()" class="btn btn-secondary mt-2">홈으로</button>
             </div>
         </div>
-    `;
+        `;
     render(html);
 };
 
@@ -543,14 +548,14 @@ window.handleCheckWinnerLogin = function () {
 
 function renderWinnerResultPage(isWinner) {
     let html = isWinner ? `
-        <div class="raffle-result text-center">
+            < div class="raffle-result text-center" >
             <h2 class="mt-4" style="font-size: 2rem; color: #2ecc71;">🎉 당첨! 🎉</h2>
             <div class="gift-box mt-4" style="padding: 1.5rem; background: var(--card-bg); border-radius: 12px;">치킨 기프티콘 🍗</div>
             <button onclick="renderMainPage()" class="btn mt-4">메인으로</button>
-        </div>` : `
-        <div class="raffle-result text-center">
+        </div > ` : `
+            < div class="raffle-result text-center" >
             <h2 class="mt-4" style="font-size: 3rem;">😭 꽝!</h2>
             <button onclick="renderMainPage()" class="btn mt-4">다음에 또 도전!</button>
-        </div>`;
+        </div > `;
     render(html);
 }
